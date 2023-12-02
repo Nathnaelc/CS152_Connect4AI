@@ -42,7 +42,7 @@ class Connect4Game:
     def is_valid_location(self, col):
         cell_value = self.board[self.row_count - 1][col]
         # Debugging print
-        print(f"Checking column {col}, cell value: {cell_value}")
+        # print(f"Checking column {col}, cell value: {cell_value}")
         return cell_value == PIECE_EMPTY
 
     def get_next_open_row(self, col):
@@ -300,20 +300,23 @@ def main():
 
     screen = pygame.display.set_mode(
         (game.column_count * CELL_SIZE, game.row_count * CELL_SIZE))
+
     game.reset_game()  # Reset the game
 
     def draw_board(board):
-        """Draw the game board."""
-        for r in range(game.row_count):
-            for c in range(game.column_count):
-                pygame.draw.rect(
-                    screen, COLOR_BLUE, (c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+        for c in range(game.column_count):
+            for r in range(game.row_count):
+                pygame.draw.rect(screen, COLOR_BLUE, (c * CELL_SIZE,
+                                 (game.row_count - 1 - r) * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+                pygame.draw.circle(screen, COLOR_BLACK, (int(c * CELL_SIZE + CELL_SIZE / 2), int(
+                    (game.row_count - 1 - r) * CELL_SIZE + CELL_SIZE / 2)), CELL_SIZE // 2 - 5)
+
                 if board[r][c] == PIECE_HUMAN:
-                    pygame.draw.circle(screen, COLOR_RED, (c * CELL_SIZE + CELL_SIZE //
-                                       2, r * CELL_SIZE + CELL_SIZE // 2), CELL_SIZE // 2 - 5)
+                    pygame.draw.circle(screen, COLOR_RED, (int(c * CELL_SIZE + CELL_SIZE / 2), int(
+                        (game.row_count - 1 - r) * CELL_SIZE + CELL_SIZE / 2)), CELL_SIZE // 2 - 5)
                 elif board[r][c] == PIECE_AI:
-                    pygame.draw.circle(screen, COLOR_YELLOW, (c * CELL_SIZE + CELL_SIZE //
-                                       2, r * CELL_SIZE + CELL_SIZE // 2), CELL_SIZE // 2 - 5)
+                    pygame.draw.circle(screen, COLOR_YELLOW, (int(c * CELL_SIZE + CELL_SIZE / 2), int(
+                        (game.row_count - 1 - r) * CELL_SIZE + CELL_SIZE / 2)), CELL_SIZE // 2 - 5)
 
         pygame.display.update()
 
@@ -329,39 +332,33 @@ def main():
     while True:
         game_over = False
         turn = random.randint(PLAYER_HUMAN, PLAYER_AI)
-        game.reset_game()  # Reset the game
+        game.reset_game()
 
         while not game_over:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()  # Close the Pygame window and exit the program
+                    pygame.quit()
                     sys.exit()
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if turn == PLAYER_HUMAN:
-                        # Get human player's input (e.g., mouse position)
-                        pos_x, pos_y = pygame.mouse.get_pos()
-                        clicked_column = pos_x // CELL_SIZE  # Assuming you have a cell size defined
-                        if column is not None and game.is_valid_location(column):
-                            row = game.get_next_open_row(clicked_column)
-                            game.drop_piece(row, clicked_column, PIECE_HUMAN)
-                            if game.check_winning_move(PIECE_HUMAN):
-                                # Handle human win (e.g., display message)
-                                game_over = True
-                            turn = PLAYER_AI
+                if event.type == pygame.MOUSEBUTTONDOWN and turn == PLAYER_HUMAN:
+                    pos_x, pos_y = pygame.mouse.get_pos()
+                    clicked_column = pos_x // CELL_SIZE
+                    if game.is_valid_location(clicked_column):
+                        row = game.get_next_open_row(clicked_column)
+                        game.drop_piece(row, clicked_column, PIECE_HUMAN)
+                        if game.check_winning_move(PIECE_HUMAN):
+                            game_over = True
+                        turn = PLAYER_AI
 
             if turn == PLAYER_AI and not game_over:
-                # AI's turn
                 column = game.ai.best_move()
                 if game.is_valid_location(column):
                     row = game.get_next_open_row(column)
                     game.drop_piece(row, column, PIECE_AI)
                     if game.check_winning_move(PIECE_AI):
-                        # Handle AI win (e.g., display message)
                         game_over = True
                     turn = PLAYER_HUMAN
 
-            # Draw board
             draw_board(game.board)
             pygame.display.update()
 
