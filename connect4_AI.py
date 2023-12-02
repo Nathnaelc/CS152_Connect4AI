@@ -278,9 +278,13 @@ class Connect4AI:
         return score
 
     def best_move(self):
-        """Determine the best move for the AI."""
         column, minimax_score = self.minimax(
             self.game.board, self.depth, -math.inf, math.inf, True)
+        if column is None:
+            # Handle the case where no valid move is found
+
+            # You might choose a random valid column or take another specific action
+            column = random.choice(self.get_valid_locations(self.game.board))
         return column
 
 
@@ -338,7 +342,7 @@ def main():
                         # Get human player's input (e.g., mouse position)
                         pos_x, pos_y = pygame.mouse.get_pos()
                         clicked_column = pos_x // CELL_SIZE  # Assuming you have a cell size defined
-                        if game.is_valid_location(clicked_column):
+                        if column is not None and game.is_valid_location(column):
                             row = game.get_next_open_row(clicked_column)
                             game.drop_piece(row, clicked_column, PIECE_HUMAN)
                             if game.check_winning_move(PIECE_HUMAN):
