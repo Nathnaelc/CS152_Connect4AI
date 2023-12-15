@@ -100,21 +100,25 @@ class Connect4Game:
         return False
 
     def evaluate_window(self, window, piece):
-        """Evaluate a window of the board and return the score based on the pieces alignment."""
         score = 0
         opponent_piece = PIECE_HUMAN if piece == PIECE_AI else PIECE_AI
 
         if window.count(piece) == 4:
             score += 100
         elif window.count(piece) == 3 and window.count(PIECE_EMPTY) == 1:
-            score += 5
+            score += 10
         elif window.count(piece) == 2 and window.count(PIECE_EMPTY) == 2:
-            score += 2
+            score += 5
 
         if window.count(opponent_piece) == 3 and window.count(PIECE_EMPTY) == 1:
-            score -= 4
+            score -= 8  # Increased penalty for opponent's potential win
+
+        # Additional strategic scoring
+        if window.count(piece) == 1 and window.count(PIECE_EMPTY) == 3:
+            score += 1  # Slight advantage for spread out pieces
 
         return score
+
 
     def score_board_position(self, board, piece):
         """Calculate the score for the AI's current board position."""
@@ -183,22 +187,21 @@ class Connect4AI:
         if depth == 0 or is_terminal:
             if is_terminal:
                 if self.game.check_winning_move(PLAYER_AI):
-                    return (None, 100000000000000)
+                    return (None, float('inf'))
                 elif self.game.check_winning_move(PLAYER_HUMAN):
-                    return (None, -100000000000000)
+                    return (None, float('-inf'))
                 else:  # Game is over, no more valid moves
                     return (None, 0)
             else:  # Depth is zero
-                return (None, self.score_position(board, PLAYER_AI))
+                return (None, self.score_position(board, PLAYER_AI if maximizingPlayer else PLAYER_HUMAN))
         if maximizingPlayer:
-            value = -math.inf
+            value = float('-inf')
             column = random.choice(valid_locations)
             for col in valid_locations:
                 row = self.game.get_next_open_row(col)
                 temp_board = board.copy()
                 self.game.drop_piece(temp_board, row, col, PLAYER_AI)
-                new_score = self.minimax(
-                    temp_board, depth-1, alpha, beta, False)[1]
+                new_score = self.minimax(temp_board, depth-1, alpha, beta, False)[1]
                 if new_score > value:
                     value = new_score
                     column = col
@@ -206,15 +209,15 @@ class Connect4AI:
                 if alpha >= beta:
                     break
             return column, value
-        else:  # Minimizing player
-            value = math.inf
+        # Minimizing player
+        else:
+            value = float('inf')
             column = random.choice(valid_locations)
             for col in valid_locations:
                 row = self.game.get_next_open_row(col)
                 temp_board = board.copy()
                 self.game.drop_piece(temp_board, row, col, PLAYER_HUMAN)
-                new_score = self.minimax(
-                    temp_board, depth-1, alpha, beta, True)[1]
+                new_score = self.minimax(temp_board, depth-1, alpha, beta, True)[1]
                 if new_score < value:
                     value = new_score
                     column = col
@@ -222,6 +225,7 @@ class Connect4AI:
                 if alpha >= beta:
                     break
             return column, value
+        
 
     def get_valid_locations(self, board):
         """Get a list of columns that can accept a new piece."""
