@@ -91,13 +91,6 @@ class Connect4Game:
 
                 return r
 
-    def display_board(self):  # not being used
-        """
-        Print the game board.
-        The board is flipped vertically before printing, so the first row printed is the bottom row of the game board.
-        """
-        print(np.flip(self.board, 0))
-
     def reset_game(self):
         """
         Reset the game by clearing the board and resetting variables.

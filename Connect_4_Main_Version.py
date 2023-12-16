@@ -295,6 +295,11 @@ class Connect4AI:
         return score
 
     def get_immediate_win_move(self, board, piece):
+        """
+        Check if there is an immediate win move for the AI.
+        An immediate win move is a move that results in a winning pattern.
+        Returns the column number if there is an immediate win move, None otherwise.
+        """
         for col in range(self.game.column_count):
             if self.game.is_column_open(board, col):
                 row = self.game.find_open_row(board, col)

@@ -1,5 +1,5 @@
 import numpy as np
-from Connect4_MyVersion import Connect4Game, Connect4AI, PLAYER_AI, PLAYER_HUMAN, NEGATIVE, POSITIVE
+from Connect_4_Main_Version import Connect4Game, Connect4AI, PLAYER_AI, PLAYER_HUMAN, NEGATIVE, POSITIVE
 import unittest
 
 
@@ -43,8 +43,6 @@ class TestMinimax(unittest.TestCase):
             test_board, 5, NEGATIVE, POSITIVE, True)
         # AI should play in the first column to block the human's win
         self.assertEqual(column, 0)
-
-    # Add more tests for different scenarios...
 
 
 if __name__ == '__main__':

@@ -53,8 +53,6 @@ def visualize_board_scores(board, scores, scenario_name):
     plt.tight_layout()
     plt.show()
 
-# Rest of the main function remains the same
-
 
 def main():
     game = Connect4Game(6, 7)
