@@ -2,6 +2,9 @@
 
 Welcome to the Connect 4 AI repository! This project is an implementation of a classic Connect 4 game with an AI opponent capable of challenging human players. Utilizing algorithms and optimization techniques from CS152, this AI adapts to different game stages with strategic depth and efficiency.
 
+<img width="705" alt="image" src="https://github.com/Nathnaelc/CS152_Connect4AI/assets/84234169/9b21c978-7227-41e7-a822-890678e62dfa">
+
+
 ## Features
 
 - **Dynamic AI Difficulty**: AI adapts its search depth based on the game state.
