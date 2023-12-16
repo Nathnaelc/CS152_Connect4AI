@@ -28,7 +28,7 @@ python3 Connect_4_Main_Version.py
 Run the game using Python from the command line:
 
 ```bash
-python connect4_main.py
+python3 Connect_4_Main_Version.py
 ```
 
 Follow the on-screen prompts to start the game against the AI.
